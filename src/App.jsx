@@ -1,4 +1,6 @@
 import { Component } from "react";
+import ListaKartica from "./components/ListaKartica";
+import SearchPolje from "./components/SearchPolje";
 import "./App.css";
 
 class App extends Component {
@@ -6,37 +8,39 @@ class App extends Component {
     super();
     this.state = {
       osobe: [],
+      searchPolje: "",
     };
-    console.log(1);
   }
 
   componentDidMount() {
-    console.log(3);
     fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
       res.json().then((users) =>
-        this.setState(
-          () => {
-            return { osobe: users };
-          },
-          () => {
-            console.log(this.state);
-          }
-        )
+        this.setState(() => {
+          return { osobe: users };
+        })
       )
     );
   }
 
+  onFilterChange = (event) => {
+    const searchPolje = event.target.value.toLocaleLowerCase();
+    this.setState(() => {
+      return { searchPolje };
+    });
+  };
+
   render() {
-    console.log(2);
+    const { osobe, searchPolje } = this.state;
+    const { onFilterChange } = this;
+
+    const filter = osobe.filter((osoba) => {
+      return osoba.name.toLocaleLowerCase().includes(searchPolje);
+    });
+
     return (
       <div className="App">
-        {this.state.osobe.map((osoba) => {
-          return (
-            <div key={Math.random()}>
-              <p>{osoba.name}</p>
-            </div>
-          );
-        })}
+        <SearchPolje onFilterChange={onFilterChange} />
+        <ListaKartica osobe={filter} />
       </div>
     );
   }
