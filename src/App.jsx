@@ -1,49 +1,40 @@
-import { Component } from "react";
-import ListaKartica from "./components/ListaKartica";
+import React, { useState, useEffect } from "react";
 import SearchPolje from "./components/SearchPolje";
+import ListaKartica from "./components/ListaKartica";
 import "./App.css";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      osobe: [],
-      searchPolje: "",
-    };
-  }
+const App = () => {
+  const [searchPolje, setSearchPolje] = useState("");
+  const [osobe, setOsobe] = useState([]);
+  const [filter, setFilter] = useState(osobe);
 
-  componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
-      res.json().then((users) =>
-        this.setState(() => {
-          return { osobe: users };
-        })
-      )
-    );
-  }
+  console.log("render");
 
-  onFilterChange = (event) => {
-    const searchPolje = event.target.value.toLocaleLowerCase();
-    this.setState(() => {
-      return { searchPolje };
-    });
-  };
+  useEffect(() => {
+    console.log("useeffect se opalio");
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((users) => setOsobe(users));
+  }, []);
 
-  render() {
-    const { osobe, searchPolje } = this.state;
-    const { onFilterChange } = this;
-
-    const filter = osobe.filter((osoba) => {
+  useEffect(() => {
+    const noviFilter = osobe.filter((osoba) => {
       return osoba.name.toLocaleLowerCase().includes(searchPolje);
     });
+    setFilter(noviFilter);
+  }, [osobe, searchPolje]);
 
-    return (
-      <div className="App">
-        <SearchPolje onFilterChange={onFilterChange} />
-        <ListaKartica osobe={filter} />
-      </div>
-    );
-  }
-}
+  const onFilterChange = (event) => {
+    const searchPoljeString = event.target.value.toLocaleLowerCase();
+    setSearchPolje(searchPoljeString);
+  };
+
+  return (
+    <div>
+      <SearchPolje onFilterChange={onFilterChange} />
+      <ListaKartica osobe={filter} />
+    </div>
+  );
+};
 
 export default App;

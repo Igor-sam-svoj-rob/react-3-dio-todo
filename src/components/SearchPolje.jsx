@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class SearchPolje extends Component {
-  render() {
-    return (
-      <input
-        type="search"
-        placeholder="pretraži"
-        className="search-box"
-        onChange={this.props.onFilterChange}
-      />
-    );
-  }
-}
+const SearchPolje = ({ onFilterChange }) => {
+  return (
+    <input
+      type="search"
+      placeholder="pretraži"
+      className="search-box"
+      onChange={onFilterChange}
+    />
+  );
+};
+
+export default SearchPolje;
