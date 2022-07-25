@@ -1,38 +1,22 @@
-import React, { useState, useEffect } from "react";
-import SearchPolje from "./components/SearchPolje";
-import ListaKartica from "./components/ListaKartica";
+import React, { useState } from "react";
+import Form from "./components/Form";
+import TodoList from "./components/TodoList";
 import "./App.css";
 
 const App = () => {
-  const [searchPolje, setSearchPolje] = useState("");
-  const [osobe, setOsobe] = useState([]);
-  const [filter, setFilter] = useState(osobe);
-
-  console.log("render");
-
-  useEffect(() => {
-    console.log("useeffect se opalio");
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((users) => setOsobe(users));
-  }, []);
-
-  useEffect(() => {
-    const noviFilter = osobe.filter((osoba) => {
-      return osoba.name.toLocaleLowerCase().includes(searchPolje);
-    });
-    setFilter(noviFilter);
-  }, [osobe, searchPolje]);
-
-  const onFilterChange = (event) => {
-    const searchPoljeString = event.target.value.toLocaleLowerCase();
-    setSearchPolje(searchPoljeString);
-  };
+  const [inputText, setInputText] = useState("");
+  const [todos, setTodos] = useState([]);
 
   return (
     <div>
-      <SearchPolje onFilterChange={onFilterChange} />
-      <ListaKartica osobe={filter} />
+      <h1>ToDo Lista</h1>
+      <Form
+        inputText={inputText}
+        setInputText={setInputText}
+        todos={todos}
+        setTodos={setTodos}
+      />
+      <TodoList todos={todos} setTodos={setTodos} />
     </div>
   );
 };
